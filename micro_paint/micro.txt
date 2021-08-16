@@ -1,0 +1,99 @@
+Assignment name  : micro_paint
+Expected files   : *.c *.h
+Allowed functions: fopen, fread, fscanf, fclose, write, malloc, calloc, realloc, free, memset, powf, sqrtf
+--------------------------------------------------------------------------------------
+
+Ecrire un programme qui prendra en parametre un "fichier d'operations" et affichera le resultat dans le terminal
+
+Votre programme ne prendra qu un seul argument, ce sera le chemin vers le "fichier d'operations"
+Si votre programme recoit 0 ou plus de 1 argument il devra afficher "Error: argument" suivi d'un \n dans STDOUT
+您的程序将只接受一个参数，它将是“操作文件”的路径
+如果您的程序收到 0 个或 1 个以上的参数，则应在 STDOUT 中显示“错误：参数”后跟一个 \ n
+
+$> ./micro_paint | cat -e
+Error: argument$
+$> ./micro_paint do not fear mathematics | cat -e
+Error: argument$
+$> 
+
+Si votre programme rencontre un probleme quand il ouvre ou bien lit le "fichier d'operation", il devra écrire "Error: Operation file corrupted" suivi d'un \n dans STDOUT
+
+Le "fichier d'operation" sera composé d'une opération par ligne
+Si une ligne n'est pas correct, alors c'est qu'un probleme vient d'avoir lieu
+Si votre programme à un probleme il doit renvoyer 1
+Si votre programme n'a pas rencontré de probleme, il doit renvoyer 0
+La derniere ligne du fichier ne sera pas forcement terminée par un \n
+Les lignes doivent etre lu dans l'ordre et par consequent les operations doivent etre executées dans le meme ordre
+Il doit y avoir au moins un espace entre chaque variable d'une ligne
+如果您的程序在打开或读取“操作文件”时出现问题，则应在 STDOUT 中写入“错误：操作文件已损坏”后跟一个 \n
+
+“操作文件”将由每行一个操作组成
+如果一行不正确，则说明刚刚发生了问题
+如果你的程序有问题，它应该返回 1
+如果你的程序没有遇到问题，它应该返回 0
+文件的最后一行不一定以 \n 结尾
+必须按顺序读取行，因此必须以相同的顺序执行操作
+一行中的每个变量之间必须至少有一个空格
+
+WIDTH HEIGHT BACKGROUND_CHAR
+Cette ligne sera toujours la premiere ligne du fichier et elle definie la zone dites "de dessin". Votre programme ne devrait rien afficher en dehors de cette "zone de dessin". Cette ligne ne sera presente qu une fois.
+- WIDTH: doit etre un int tel que 0 < WIDTH <= 300, C est le nombre de caractères horizontaux utilisés pour la zone de dessin
+- HEIGHT: doit etre un int tel que 0 < HEIGHT <= 300, C est le nombre de caractères verticaux utilisés pour la zone de dessin
+- BACKGROUND_CHAR: Par defaut toutes la "zone de dessin" est rempli avec BACKGROUND_CHAR
+宽度高度背景_CHAR
+该行将始终是文件的第一行，它定义了所谓的“绘图”区域。 您的程序不应在此“绘图区域”之外显示任何内容。 此行只会出现一次。
+- WIDTH：必须是一个整数，使得 0 <WIDTH <= 300，C 是用于绘图区域的水平字符数
+- HEIGHT：必须是一个整数，使得 0 <HEIGHT <= 300，C 是用于绘图区域的垂直字符数
+- BACKGROUND_CHAR：默认情况下所有“绘图区域”都填充了BACKGROUND_CHAR
+
+r X Y WIDTH HEIGHT CHAR
+Cette operation fera dessiné un rectangle vide, ou seulement la bordure du rectangle est dessinée  //矩形
+- r: le caractère r
+- X: un float, la position horizontale du coin en haut a gauche du rectangle
+- Y: un float, la position verticale du coin en haut a gauche du rectangle
+- WIDTH: un float positif different de 0, la largeur du cercle (horizontale)
+- HEIGHT: un float positif different de 0, la hauteur du cercle (verticale)
+- CHAR: un char, le caractère utilisé pour dessiner le rectangle
+r X Y 宽度高度字符
+这个操作会绘制一个空矩形，或者只绘制矩形的边框 //椭圆
+- r：字符r
+- X：一个浮点数，矩形左上角的水平位置
+- Y：一个浮点数，矩形左上角的垂直位置
+- WIDTH：一个不同于0的正浮点数，圆的宽度（水平）
+- HEIGHT：一个不同于 0 的正浮点数，圆的高度（垂直）
+- CHAR：一个字符，用于绘制矩形的字符
+
+R X Y WIDTH HEIGHT CHAR
+Cette operation fera dessiné un rectangle plein
+- R: le caractère R
+- X: un float, la position horizontale du coin en haut a gauche du rectangle
+- Y: un float, la position verticale du coin en haut a gauche du rectangle
+- WIDTH: un float positif different de 0, la largeur du cercle (horizontale)
+- HEIGHT: un float positif different de 0, la hauteur du cercle (verticale)
+- CHAR: un char, le caractère utilisé pour dessiner le rectangle
+
+
+La "zone de dessin" est divisé en rectangle qui peuvent chacun contenir un seul caractère (c'est parce qu'on est dans un terminal...) nous les appelerons pixel
+Pour faciliter les calculs nous n'utiliserons que le coin en haut à gauche d'un pixel pour savoir si celui ci est dans un rectangle ou pas
+Si le coin en haut a gauche d'un pixel est à une distance superieure ou egale à 1 de la bordure d un rectangle celui ci ne fait pas parti d'un rectangle vide
+Si le coin en haut a gauche d'un pixel est à une distance inferieur à 1 de la bordure d'un rectangle, il fait alors parti d'un rectangle vide
+
+Vous devriez regarder l'image fournie tout en lisant les prochaines lignes. Cette image represente le terminal. Nous avons fait une "zone de dessin" avec un WIDTH à 5 et une HEIGHT à 3
+Nous avons écrit une lettre différente par caractère dans la "zone de dessin" afin de faciliter les explications.
+- Si vous voulez effectuer l'operation: r 2.5 1.5 1 1 X (le rectangle vert)
+-- Cela fera que le caractère 'D' dans l'image sera remplacés par 'X'
+“绘图区”被划分为矩形，每个矩形可以包含一个字符（这是因为我们在终端中......）我们将它们称为像素
+为了便于计算，我们将仅使用像素的左上角来判断它是否在矩形中
+如果像素的左上角与矩形边界的距离大于或等于 1，则这不是空矩形的一部分
+如果像素的左上角与矩形边界的距离小于 1，则它是空矩形的一部分
+
+您应该在阅读接下来的几行时查看提供的图像。该图像代表终端。我们制作了一个“绘图区”，宽度为 5，高度为 3
+我们在“绘图区”中为每个字符写了不同的字母以方便解释。
+- 如果要执行操作：r 2.5 1.5 1 1 X（绿色矩形）
+- 这将导致图像中的字符 'D' 被 'X' 替换
+Vous trouverez our_micro_paint afin de vous aider à tester ainsi que des fichiers operation_file.example
+
+Astuce:
+Si 1 point est définis par (Xa, Ya)
+Et qu'un rectangle est defini par son coin en haut a gauche (Xtl, Ytl) et son coin en bas a droite (Xbr, Ybr)
+If Xtl <= Xa <= Xbr and Ytl <= Ya <= Ybr alors le point est dans le rectangle
