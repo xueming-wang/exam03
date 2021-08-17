@@ -2,7 +2,7 @@
 #include <string.h> // memset
 #include <stdlib.h>
 #include <math.h>
-
+#include <unistd.h>
 typedef struct s_zone
 {
     int width;
@@ -20,6 +20,16 @@ typedef struct s_draw
 
 } t_draw;
 
+static void ft_putchar(char c)
+{
+    write(1, &c, 1);
+}
+
+static void ft_putstr(char *str)
+{
+    while (*str)
+        write(1, str++, 1);
+}
 static void _free_(void *zone)
 {
     if (zone)
@@ -27,8 +37,9 @@ static void _free_(void *zone)
 }
 static int  _exit_(char *msg, int ret)
 {
-    printf ("%s\n", msg);
-        return (ret);
+    if (msg)
+        ft_putstr(msg);
+    return (ret);
 }
 
 
@@ -130,8 +141,8 @@ static void print_all(char *zone, t_zone paper)
     {
         i = 0;
         while (i < paper.width)
-            printf("%c", zone[j * paper.width + i++]);
-        printf("\n");
+            ft_putchar(zone[j * paper.width + i++]);
+        ft_putchar('\n');
         
         j++;
     }

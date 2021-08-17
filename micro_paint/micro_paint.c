@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 typedef struct s_zone
 {
@@ -20,6 +21,15 @@ typedef struct s_draw
 
 } t_draw;
 
+static void ft_putchar(char c)
+{
+    write (1, &c, 1);
+}
+static void ft_putstr(char *str)
+{
+    while (*str)
+        write (1, str++, 1);
+}
 static void _free_(void *zone)
 {
     if (zone)
@@ -28,7 +38,7 @@ static void _free_(void *zone)
 static int  _exit_(char *msg, int ret)
 {
     if (msg)
-        printf ("%s\n", msg);
+       ft_putstr(msg);
     return (ret);
 }
 
@@ -128,9 +138,9 @@ static void print_all(char *zone, t_zone paper)  //
         i = 0;
         while (i < paper.width)
         {
-            printf("%c", zone[j * paper.width + i++]);
+            ft_putchar(zone[j * paper.width + i++]);
         }
-        printf("\n");
+        ft_putchar('\n');
         
         j++;
     }
@@ -153,7 +163,7 @@ int main(int ac, char **av)
         fclose(file);
         return (_exit_("Error: Operation file corrupted\n", 1));
     }
-    if (!(check_draw_rect(file, &paper, &zone)))
+    if (!(check_all(file, &paper, &zone)))
     {
         _free_(zone);
         fclose(file);
