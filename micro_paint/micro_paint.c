@@ -27,18 +27,19 @@ static void _free_(void *zone)
 }
 static int  _exit_(char *msg, int ret)
 {
-    printf ("%s\n", msg);
-        return (ret);
+    if (msg)
+        printf ("%s\n", msg);
+    return (ret);
 }
 
 
-static int  check_zone(FILE *file, t_zone *paper, char **zone)
+static int  check_zone(FILE *file, t_zone *paper, char **zone) //check 和calloc整个地图 把字符都放进去
 {
     int i = 0;
 
    if ((i = fscanf(file, "%d %d %c\n", &paper->width, &paper->height, &paper->c)) != 3) //取得矩形长宽值
         return (0);
-    if (paper->width > 300 || paper->width < 0 ||  paper->height > 300 || paper->height < 0)
+    if (paper->width > 300 || paper->width <= 0 ||  paper->height > 300 || paper->height <= 0)
         return (0);
     if (i == -1)
         return (0);
@@ -49,15 +50,15 @@ static int  check_zone(FILE *file, t_zone *paper, char **zone)
     return (1);
 }
 
-static int check_rect(float i, float j, t_draw *draw)
+static int check_rect(float i, float j, t_draw *draw)   //确认是画图的条件
 {
     
-    if (i < draw->x || j < draw->y || i > draw->x + draw->width || j > draw->y + draw->height)// 小于起点大于图像大小的点 不画
+    if (i < draw->x || j < draw->y || i > draw->x + draw->width || j > draw->y + draw->height)// 小于起点或者大于图像到达的点 不画
         return (0);
-    // if (i - draw->x < 1. || j - draw->y < 1. || draw->x + draw->width - i < 1. || draw->y + draw->height -j < 1.) 
-    //     return (2); //i 表示每趟的x值都画 ， j表示没个第y趟都画 ，i的值是最大时候都画 , j的值最大时候都画
-    if(i < draw->x + 1 || i > draw->x + draw->width - 1  || j < draw->y + 1 || j > draw->y + draw->height - 1)
-            return (2);
+    if (i - draw->x < 1. || j - draw->y < 1. || draw->x + draw->width - i < 1. || draw->y + draw->height -j < 1.) 
+        return (2); //i 表示每趟的x值都画 ， j表示每个第y趟都画 ，i的值是最大时候都画 , j的值最大时候都画
+    // if(i < draw->x + 1 || i > draw->x + draw->width - 1  || j < draw->y + 1 || j > draw->y + draw->height - 1)
+    //         return (2);
     return (1);  //画c
         
 }
@@ -144,21 +145,22 @@ int main(int ac, char **av)
     if (ac != 2)
         return (_exit_("1Error: argument\n", 1));
     if (!(file = fopen(av[1], "r")))                    
-        return (_exit_("4Error: Operation file corrupted\n", 1));
+        return (_exit_("Error: Operation file corrupted\n", 1));
     if (!(check_zone(file, &paper, &zone)))
     {
-        _free_(zone);
+        if (zone)
+            _free_(zone);
         fclose(file);
-        return (_exit_("2Error: Operation file corrupted\n", 1));
+        return (_exit_("Error: Operation file corrupted\n", 1));
     }
     if (!(check_draw_rect(file, &paper, &zone)))
     {
         _free_(zone);
         fclose(file);
-        return (_exit_("3Error: Operation file corrupted\n", 1));
+        return (_exit_("Error: Operation file corrupted\n", 1));
     }
     print_all(zone, paper);
-     _free_(zone);
+        _free_(zone);
     fclose(file);
     return (0);
 }

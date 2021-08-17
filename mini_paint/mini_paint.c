@@ -38,7 +38,7 @@ static int  check_zone(FILE *file, t_zone *paper, char **zone)
 
    if ((i = fscanf(file, "%d %d %c\n", &paper->width, &paper->height, &paper->c)) != 3) //取得矩形长宽值
         return (0);
-    if (paper->width > 300 || paper->width < 0 ||  paper->height > 300 || paper->height < 0)
+    if (paper->width > 300 || paper->width <= 0 ||  paper->height > 300 || paper->height <= 0)
         return (0);
     if (i == -1)
         return (0);
@@ -54,6 +54,7 @@ static int creat_c(float i, float j, t_draw *draw)
     float p; //亮点直接的距离
 
     p = sqrtf(powf(i - draw->x, 2.) + powf(j - draw->y, 2));//sqrtf返回arg的平方根 负数没有平方根  //powf 是 i - x的2次方
+    //p = sqrtf((i - draw->x) * (i - draw->x) + (j - draw->y) * (j - draw->y));
     if (p <= draw->radius)
     {
         if (draw->radius - p < 1.)  //直径-去两点直接距离 小于1
@@ -110,7 +111,7 @@ static int check_all(FILE *file, t_zone *paper, char **zone)   //画好几个图
     
     while ((j = fscanf(file, "%c %f %f %f %c\n", &draw.type, &draw.x, &draw.y, &draw.radius, &draw.c)) == 5)
     {
-       if (!(draw.radius > 0.) && !(draw.type == 'r' && draw.type == 'R'))
+       if (!(draw.radius > 0.) || (draw.type != 'c' && draw.type != 'C'))
             return (0);
         draw_c(paper, zone, &draw);
     }
